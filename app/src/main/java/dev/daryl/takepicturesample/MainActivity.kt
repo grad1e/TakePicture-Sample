@@ -1,7 +1,5 @@
 package dev.daryl.takepicturesample
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import coil.load
 import dev.daryl.takepicturesample.databinding.ActivityMainBinding
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.quality
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -44,31 +44,22 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private var fileName: String? = null
     private var filePath: String? = null
     private fun openCamera() {
-        val fileNamePrefix = "IMG_${System.currentTimeMillis()}"
-        val fileNameSuffix = ".png"
-        fileName = fileNamePrefix + fileNameSuffix
-
-        // Creating a temporary file in order to avoid using up the space
-        val tempFile = File.createTempFile(
-            fileNamePrefix,
-            fileNameSuffix,
-            filesDir
-        ).apply {
-            filePath = absolutePath
-        }
+        fileName = "IMG_${System.currentTimeMillis()}.jpg"
 
         // If you want a persistent file which you can use later, use this.
         // It will be stored under the app's 'files' directory
         val persistFile = File(
             filesDir,
             fileName
-        )
+        ).apply {
+            filePath = this.path
+        }
 
         // Getting the Uri of the aforementioned file
         val fileUri = FileProvider.getUriForFile(
             this,
-            "dev.daryl.takepicturesample.fileprovider",
-            tempFile
+            "${BuildConfig.APPLICATION_ID}.fileprovider",
+            persistFile
         )
 
         // Launches the intent
@@ -83,17 +74,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 // Launching a coroutine to compress the file in a background thread
                 lifecycleScope.launch(Dispatchers.IO) {
 
-                    // Decodes the file into a bitmap and uses the compress method and writes into a file
-                    val bmp = BitmapFactory.decodeFile(filePath)
-                    this@MainActivity.openFileOutput(fileName, MODE_PRIVATE)
-                        .use { fos ->
-                            bmp.compress(Bitmap.CompressFormat.JPEG, 50, fos)
-                        }
+                    // Uses the Zelory Compressor
+                    File(filePath).let { file ->
+                        val compressedImageFile =
+                            Compressor.compress(this@MainActivity, file) {
+                                quality(50)
+                            }
 
-                    // The compressed file is retrieved and then passed onto
-                    // the viewModel where you can use it for sending the image via retrofit
-                    val fileCompressed = File(filePath)
-                    viewModel.setImage(fileCompressed)
+                        // The compressed file is retrieved and then passed onto
+                        // the viewModel where you can use it for sending the image via retrofit
+                        viewModel.setImage(compressedImageFile)
+                    }
                 }
             } else {
                 Toast.makeText(this, "User cancelled", Toast.LENGTH_LONG).show()
