@@ -16,17 +16,18 @@
             android:layout_marginTop="8dp"
             android:text="Open single file picker"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.486"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_open_camera" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_open_camera_video" />
 
         <Button
-            android:id="@+id/btn_open_camera"
+            android:id="@+id/btn_open_camera_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="Open Camera"
+            android:text="Open Camera - Picture"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -52,6 +53,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_single_file_picker" />
+
+        <Button
+            android:id="@+id/btn_open_camera_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Open camera - video"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_open_camera_picture" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

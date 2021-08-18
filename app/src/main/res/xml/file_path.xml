@@ -3,4 +3,7 @@
     <files-path
         name="captured_images"
         path="." />
+    <cache-path
+        name="compressor_images"
+        path="./compressor" />
 </paths>

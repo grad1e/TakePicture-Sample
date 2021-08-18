@@ -9,7 +9,10 @@ import coil.load
 import dev.daryl.takepicturesample.data.FileListModel
 import dev.daryl.takepicturesample.databinding.ItemFileListBinding
 
-class FileListAdapter(private val onDeletePressed: (FileListModel) -> Unit) :
+class FileListAdapter(
+    private val onItemClicked: (FileListModel) -> Unit,
+    private val onDeletePressed: (FileListModel) -> Unit
+) :
     ListAdapter<FileListModel, FileListAdapter.ViewHolder>(object :
         DiffUtil.ItemCallback<FileListModel?>() {
         override fun areItemsTheSame(oldItem: FileListModel, newItem: FileListModel): Boolean {
@@ -27,6 +30,9 @@ class FileListAdapter(private val onDeletePressed: (FileListModel) -> Unit) :
             binding.imageDelete.setOnClickListener {
                 onDeletePressed(binding.item!!)
             }
+            binding.cslItem.setOnClickListener {
+                onItemClicked(binding.item!!)
+            }
         }
     }
 
@@ -43,7 +49,7 @@ class FileListAdapter(private val onDeletePressed: (FileListModel) -> Unit) :
         val item = getItem(position)
         holder.binding.apply {
             this.item = item
-            imagePreview.load(item.image)
+            imagePreview.load(item.file)
             textFileName.text = item.fileName
         }
     }
